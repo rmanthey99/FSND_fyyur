@@ -11,8 +11,10 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+from sqlalchemy.sql.sqltypes import ARRAY, String
 from forms import *
 from flask_migrate import Migrate
+from datetime import datetime
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -46,6 +48,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, default=True)
     seeking_description = db.Column(db.String(250))
     shows = db.relationship('Show', backref='venue', lazy=True)
+    genres = db.Column('genres', db.ARRAY(db.String()), nullable = False)
 
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
@@ -244,11 +247,32 @@ def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
 
+  try:
+    form = VenueForm()
+    venue = Venue(
+      name=form.name.data, 
+      city=form.city.data, 
+      state=form.state.data, 
+      address=form.address.data,
+      phone=form.phone.data, 
+      image_link=form.image_link.data,
+      genres=form.genres.data, 
+      facebook_link=form.facebook_link.data, 
+      website=form.website.data, 
+      seeking_talent=form.seeking_talent.data,
+      seeking_description=form.seeking_description.data
+      
+     
+    )
   # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    flash('Venue ' + request.form['name'] + ' was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Venue ' + form.name + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  finally:
+    db.session.close()
   return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
