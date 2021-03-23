@@ -361,7 +361,7 @@ def create_artist_submission():
       image_link=form.image_link.data, 
       facebook_link=form.facebook_link.data,
       seeking_venue=form.seeking_venue.data,
-      seeking_desceiption=form.seeking_description.data
+      seeking_description=form.seeking_description.data
       )
     db.session.add(artist)
     db.session.commit()

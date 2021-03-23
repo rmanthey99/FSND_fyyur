@@ -228,7 +228,7 @@ class ArtistForm(Form):
         'facebook_link', validators=[URL()]
     )
     seeking_venue = BooleanField(
-        'seeking_talent',
+        'seeking_venue',
     )
     seeking_description = StringField(
         'seeking_description'
