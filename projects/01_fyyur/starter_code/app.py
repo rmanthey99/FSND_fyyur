@@ -129,25 +129,14 @@ def venues():
         "venues": []
     })
 
-  for venue in venues:
-    num_upcoming_shows = 0
-
-    shows = Show.query.filter_by(venue_id=venue.id).all()
-
-    # get current date to filter num_upcoming_shows
-    current_date = datetime.now()
-
-    
-    for show in shows:
-      if show.start_time > current_date:
-          num_upcoming_shows += 1
+  
 
     for venue_location in data:
       if venue.state == venue_location['state'] and venue.city == venue_location['city']:
         venue_location['venues'].append({
             "id": venue.id,
             "name": venue.name,
-            "num_upcoming_shows": num_upcoming_shows
+           
         })
 
 
@@ -283,12 +272,6 @@ def show_artist(artist_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real ARTIST data from the venues table, using ARTIST_id
   artist = Artist.query.get(artist_id)
-  shows = Show.query.filter_by(artist_id=artist_id).all()
-  past_shows = []
-  upcoming_shows = []
-  current_time = datetime.now()
-
-
   data={
     "id": artist.id,
     "name": artist.name,
@@ -298,10 +281,6 @@ def show_artist(artist_id):
     "phone": artist.phone,
     "facebook_link": artist.facebook_link,
     "image_link": artist.image_link,
-    "past_shows": past_shows,
-    "upcoming_shows": upcoming_shows,
-    "past_shows_count": len(past_shows),
-    "upcoming_shows_count": len(upcoming_shows)
   }
 
   return render_template('pages/show_artist.html', artist=data)
