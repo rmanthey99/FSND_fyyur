@@ -72,5 +72,21 @@
 	</div>
 </section>
 
+<button class="btn btn-warning" id="edit-artist" onclick="editArtist(event)" data-id={{ artist.id }}>Edit</button>
+
+<script>
+	function editArtist(event) {
+		const id = event.target.dataset.id
+		fetch (`/artists/${id}/edit`, {
+			method: 'GET'
+		})
+		.then(response => {
+			window.location.href = `/artists/${id}/edit`;
+		})
+		.catch(error => {
+			console.log(error);
+		})
+	}
+</script>
 {% endblock %}
 
