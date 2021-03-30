@@ -76,6 +76,8 @@
 </section>
 
 <button class="btn btn-danger" id="delete-venue" onclick = "deleteVenue(event)" data-id ={{ venue.id }}>Delete</button>
+<button class="btn btn-warning" id="edit-venue" onclick="editVenue(event)" data-id={{ venue.id }}>Edit</button>
+
 
 <script>
 	function deleteVenue(e) {
@@ -85,6 +87,23 @@
 		})
 		.then(response => {
 			window.location.href = response.url;
+		})
+		.catch(error => {
+			console.log(error);
+		})
+	}
+</script>
+
+
+
+<script>
+	function editVenue(event) {
+		const id = event.target.dataset.id
+		fetch (`/venues/${id}/edit`, {
+			method: 'GET'
+		})
+		.then(response => {
+			window.location.href = `/venues/${id}/edit`;
 		})
 		.catch(error => {
 			console.log(error);

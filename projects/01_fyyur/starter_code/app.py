@@ -311,12 +311,12 @@ def edit_artist_submission(artist_id):
   try:
     form = ArtistForm()
     artist = Artist.query.get(artist_id)
-    artist.name = form.name.data,
-    artist.genres = form.genres.data,
-    artist.city = form.city.data,
+    artist.name = form.name.data
+    artist.genres = form.genres.data
+    artist.city = form.city.data
     artist.state = form.state.data
     artist.phone = form.phone.data
-    artist.facebook_link = form.facebook_link.data,
+    artist.facebook_link = form.facebook_link.data
     artist.image_link = form.image_link.data
 
     db.session.commit()
@@ -329,8 +329,17 @@ def edit_artist_submission(artist_id):
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   form = VenueForm()
+  venue = Venue.query.get(venue_id)
   venue={
-    
+    "id": venue.id,
+    "name": venue.name,
+    "genres": venue.genres,
+    "address": venue.address,
+    "city": venue.city,
+    "state": venue.state,
+    "phone": venue.phone,
+    "website": venue.website,
+    "facebook_link": venue.facebook_link
   }
   # TODO: populate form with values from venue with ID <venue_id>
   return render_template('forms/edit_venue.html', form=form, venue=venue)
@@ -339,6 +348,23 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
+  try:
+    form = VenueForm()
+    venue = Venue.query.get(venue_id)
+    venue.name = form.name.data
+    venue.genres = form.genres.data
+    venue.address = form.address.data
+    venue.city = form.city.data
+    venue.state = form.state.data
+    venue.phone = form.phone.data
+    venue.website = form.webiste.data
+    venue.facebook_link= form.facebook_link.data
+
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
