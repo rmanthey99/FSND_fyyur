@@ -357,7 +357,7 @@ def edit_venue_submission(venue_id):
     venue.city = form.city.data
     venue.state = form.state.data
     venue.phone = form.phone.data
-    venue.website = form.webiste.data
+    venue.website = form.website.data
     venue.facebook_link= form.facebook_link.data
 
     db.session.commit()
