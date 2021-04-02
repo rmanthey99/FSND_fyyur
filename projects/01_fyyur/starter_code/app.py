@@ -315,7 +315,7 @@ def edit_artist_submission(artist_id):
     artist.state = form.state.data
     artist.phone = form.phone.data
     artist.facebook_link = form.facebook_link.data
-    artist.image_link = form.image_link.data
+    
 
     db.session.commit()
   except:
