@@ -1,9 +1,10 @@
 from datetime import datetime
+import re
 from flask_wtf import Form
 from sqlalchemy.sql.sqltypes import Boolean
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
 from wtforms.fields.core import BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms.validators import DataRequired, AnyOf, URL, ValidationError
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -84,14 +85,24 @@ class VenueForm(Form):
     address = StringField(
         'address', validators=[DataRequired()]
     )
+    
+    # added this per last reviewer but it doesn't work.  Though this is required
+    # any assistance is appreciated.
+    def validate_phone(self, phone):
+        us_phone_num = '^([0-9]{3})[-][0-9]{3}[-][0-9]{4}$'
+        match = re.search(us_phone_num, phone.data)
+        if not match:
+            raise ValidationError('Error, Phone Number must be in format xxx-xxx-xxxx'
+            )
+
     phone = StringField(
-        'phone'
+        'phone',
+        validators=[DataRequired(), validate_phone]
     )
     image_link = StringField(
         'image_link'
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
         'genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
