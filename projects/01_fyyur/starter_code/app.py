@@ -16,6 +16,7 @@ from flask_wtf import Form
 from forms import *
 from datetime import datetime
 from models import *
+import sys
 
 
 def format_datetime(value, format='medium'):
@@ -159,6 +160,7 @@ def create_venue_submission():
   except:
     db.session.rollback()
     flash('An error occurred. Venue ' + form.name + ' could not be listed.')
+    print(sys.exc_info())
   finally:
     db.session.close()
   return render_template('pages/home.html')
@@ -345,7 +347,7 @@ def create_artist_submission():
 #  ----------------------------------------------------------------
 @app.route('/shows')
 def shows():
-  shows = Show.query.order_by(db.desc(Show.start_time))
+  shows = Show.query.order_by(Show.id.desc()).all()
   data=[]
   for show in shows:
     data.append({
@@ -367,10 +369,11 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   try:
+    form = ShowForm()
     show = Show(
-      artist_id = request.form['artist_id'],
-      venue_id = request.form['venue_id'],
-      start_time = request.form['start_time'])
+      artist_id = form.artist_id.data,
+      venue_id = form.venue_id.data,
+      start_time = form.start_time.data)
     db.session.add(show)
     db.session.commit()
     flash('Show was successfully listed!')
