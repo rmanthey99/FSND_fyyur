@@ -46,8 +46,6 @@ def index():
 def venues():
   data = []
   venues = Venue.query.all()
-
-  # shows only unique venue locations
   locations = set()
 
   for venue in venues:
@@ -62,9 +60,7 @@ def venues():
 
   for venue in venues:
     upcoming_shows = 0
-
     shows = Show.query.filter_by(venue_id=venue.id).all()
-
     cur_date = datetime.now()
 
     for show in shows:
@@ -93,6 +89,23 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   venue = Venue.query.get(venue_id)
+  shows = Show.query.filter_by(venue_id=venue_id).all()
+  upcoming_shows = []
+  past_shows =[]
+  cur_date = datetime.now()
+
+  for show in shows:
+    data = {
+      "artist_id": show.artist_id,
+      "artist_name": show.artist.name,
+       "artist_image_link": show.artist.image_link,
+       "start_time": format_datetime(str(show.start_time))
+    }
+    if show.start_time < cur_date:
+      past_shows.append(data)
+    else:
+      upcoming_shows.append(data)
+  
   data = {
     "id": venue.id,
     "name": venue.name,
@@ -105,7 +118,11 @@ def show_venue(venue_id):
     "facebook_link": venue.facebook_link,
     "seeking_talent": venue.seeking_talent,
     "seeking_description":venue.seeking_description,
-    "image_link": venue.image_link
+    "image_link": venue.image_link,
+    "past_shows": past_shows,
+    "past_shows_count": len(past_shows),
+    "upcoming_shows": upcoming_shows,
+    "upcoming_shows_count": len(upcoming_shows)
   }
   
   return render_template('pages/show_venue.html', venue=data)
